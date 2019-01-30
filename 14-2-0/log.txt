@@ -1,0 +1,27 @@
+2019-01-30 11:28:54,748 - Preprocessed in 65.70338487625122
+2019-01-30 11:28:54,748 - Preprocessed in 65.70338487625122
+2019-01-30 11:28:54,748 - Preprocessed in 65.70338487625122
+2019-01-30 11:29:26,017 - Tokenized in 31.268032789230347
+2019-01-30 11:29:26,017 - Tokenized in 31.268032789230347
+2019-01-30 11:29:26,017 - Tokenized in 31.268032789230347
+2019-01-30 11:29:29,564 - Padding in 3.5456230640411377
+2019-01-30 11:29:29,564 - Padding in 3.5456230640411377
+2019-01-30 11:29:29,564 - Padding in 3.5456230640411377
+2019-01-30 11:31:02,931 - Created embedding_index.
+2019-01-30 11:31:02,931 - Created embedding_index.
+2019-01-30 11:31:02,931 - Created embedding_index.
+2019-01-30 11:31:06,453 - Creating embedding_matrix
+2019-01-30 11:31:06,453 - Creating embedding_matrix
+2019-01-30 11:31:06,453 - Creating embedding_matrix
+2019-01-30 11:31:48,631 - Created embedding_index.
+2019-01-30 11:31:48,631 - Created embedding_index.
+2019-01-30 11:31:48,631 - Created embedding_index.
+2019-01-30 11:31:50,420 - Creating embedding_matrix
+2019-01-30 11:31:50,420 - Creating embedding_matrix
+2019-01-30 11:31:50,420 - Creating embedding_matrix
+2019-01-30 11:33:04,771 - Created embedding_index.
+2019-01-30 11:33:04,771 - Created embedding_index.
+2019-01-30 11:33:04,771 - Created embedding_index.
+2019-01-30 11:33:07,497 - Creating embedding_matrix
+2019-01-30 11:33:07,497 - Creating embedding_matrix
+2019-01-30 11:33:07,497 - Creating embedding_matrix
