@@ -692,7 +692,7 @@ def main():
                     logger.info('Fold {} Early stop'.format(fold_i))
                     break
             if one_epoch: break
-        # proba_train[val_idx] = validation['output']
+        proba_train[val_idx] = validation['output']
         logger.info('Fold {} Finished training'.format(fold_i))
 
         proba = test(model, test_loader, device)
