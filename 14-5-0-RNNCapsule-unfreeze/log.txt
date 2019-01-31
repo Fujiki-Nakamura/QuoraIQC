@@ -1,0 +1,43 @@
+2019-01-30 10:36:30,050 - Loaded npy files
+2019-01-30 10:36:30,260 - Fold 1
+2019-01-30 10:38:57,198 - Fold 1 Epoch 1/5 Train/Loss 0.1517 Val/Loss 0.1076 Val/F1 0.6515 Threshold 0.38 
+2019-01-30 10:41:22,555 - Fold 1 Epoch 2/5 Train/Loss 0.1076 Val/Loss 0.1022 Val/F1 0.6705 Threshold 0.32 
+2019-01-30 10:44:51,032 - Fold 1 Epoch 3/5 Train/Loss 0.0995 Val/Loss 0.0987 Val/F1 0.6819 Threshold 0.33 Unfreezed. LR 0.0001
+2019-01-30 10:48:20,398 - Fold 1 Epoch 4/5 Train/Loss 0.0945 Val/Loss 0.0978 Val/F1 0.6835 Threshold 0.33 
+2019-01-30 10:51:49,284 - Fold 1 Epoch 5/5 Train/Loss 0.0906 Val/Loss 0.0985 Val/F1 0.6829 Threshold 0.33 
+2019-01-30 10:51:49,287 - Fold 1 Finished training
+2019-01-30 10:51:51,674 - Fold 1 Scored test probabilities
+2019-01-30 10:51:51,683 - Fold 2
+2019-01-30 10:54:19,013 - Fold 2 Epoch 1/5 Train/Loss 0.1483 Val/Loss 0.1050 Val/F1 0.6588 Threshold 0.38 
+2019-01-30 10:56:44,572 - Fold 2 Epoch 2/5 Train/Loss 0.1075 Val/Loss 0.1064 Val/F1 0.6569 Threshold 0.30 
+2019-01-30 11:00:14,513 - Fold 2 Epoch 3/5 Train/Loss 0.0996 Val/Loss 0.0982 Val/F1 0.6848 Threshold 0.30 Unfreezed. LR 0.0001
+2019-01-30 11:03:43,841 - Fold 2 Epoch 4/5 Train/Loss 0.0947 Val/Loss 0.0971 Val/F1 0.6859 Threshold 0.34 
+2019-01-30 11:07:13,402 - Fold 2 Epoch 5/5 Train/Loss 0.0910 Val/Loss 0.0990 Val/F1 0.6838 Threshold 0.30 
+2019-01-30 11:07:13,403 - Fold 2 Finished training
+2019-01-30 11:07:15,820 - Fold 2 Scored test probabilities
+2019-01-30 11:07:15,829 - Fold 3
+2019-01-30 11:09:42,418 - Fold 3 Epoch 1/5 Train/Loss 0.1494 Val/Loss 0.1052 Val/F1 0.6604 Threshold 0.31 
+2019-01-30 11:12:08,379 - Fold 3 Epoch 2/5 Train/Loss 0.1074 Val/Loss 0.1004 Val/F1 0.6758 Threshold 0.30 
+2019-01-30 11:15:37,887 - Fold 3 Epoch 3/5 Train/Loss 0.0999 Val/Loss 0.0973 Val/F1 0.6841 Threshold 0.34 Unfreezed. LR 0.0001
+2019-01-30 11:19:07,352 - Fold 3 Epoch 4/5 Train/Loss 0.0951 Val/Loss 0.0967 Val/F1 0.6859 Threshold 0.35 
+2019-01-30 11:22:36,891 - Fold 3 Epoch 5/5 Train/Loss 0.0910 Val/Loss 0.0973 Val/F1 0.6859 Threshold 0.30 
+2019-01-30 11:22:36,892 - Fold 3 Finished training
+2019-01-30 11:22:39,307 - Fold 3 Scored test probabilities
+2019-01-30 11:22:39,316 - Fold 4
+2019-01-30 11:25:05,549 - Fold 4 Epoch 1/5 Train/Loss 0.1547 Val/Loss 0.1044 Val/F1 0.6585 Threshold 0.34 
+2019-01-30 11:27:30,694 - Fold 4 Epoch 2/5 Train/Loss 0.1072 Val/Loss 0.0999 Val/F1 0.6751 Threshold 0.32 
+2019-01-30 11:31:00,108 - Fold 4 Epoch 3/5 Train/Loss 0.0997 Val/Loss 0.0973 Val/F1 0.6832 Threshold 0.30 Unfreezed. LR 0.0001
+2019-01-30 11:34:29,022 - Fold 4 Epoch 4/5 Train/Loss 0.0951 Val/Loss 0.0969 Val/F1 0.6860 Threshold 0.34 
+2019-01-30 11:37:58,180 - Fold 4 Epoch 5/5 Train/Loss 0.0908 Val/Loss 0.0970 Val/F1 0.6849 Threshold 0.33 
+2019-01-30 11:37:58,182 - Fold 4 Finished training
+2019-01-30 11:38:00,571 - Fold 4 Scored test probabilities
+2019-01-30 11:38:00,580 - Fold 5
+2019-01-30 11:40:27,917 - Fold 5 Epoch 1/5 Train/Loss 0.1577 Val/Loss 0.1089 Val/F1 0.6442 Threshold 0.30 
+2019-01-30 11:42:55,812 - Fold 5 Epoch 2/5 Train/Loss 0.1068 Val/Loss 0.1032 Val/F1 0.6692 Threshold 0.30 
+2019-01-30 11:46:27,662 - Fold 5 Epoch 3/5 Train/Loss 0.0989 Val/Loss 0.0987 Val/F1 0.6791 Threshold 0.34 Unfreezed. LR 0.0001
+2019-01-30 11:49:58,331 - Fold 5 Epoch 4/5 Train/Loss 0.0944 Val/Loss 0.0984 Val/F1 0.6820 Threshold 0.30 
+2019-01-30 11:53:28,820 - Fold 5 Epoch 5/5 Train/Loss 0.0903 Val/Loss 0.0983 Val/F1 0.6842 Threshold 0.32 
+2019-01-30 11:53:28,822 - Fold 5 Finished training
+2019-01-30 11:53:31,352 - Fold 5 Scored test probabilities
+2019-01-30 11:53:34,347 - Train/F1/Best 0.6838 (Threshold = 0.30)
+2019-01-30 11:53:34,445 - 1h 17m 05.825952s
