@@ -46,8 +46,9 @@ n_splits = 4
 skf_random_state = 10
 epochs = 5
 lr = 1e-3
-epoch_unfreeze = None  # 3
+epoch_unfreeze = 3
 lr2 = 1e-4
+# seed
 seed0 = 1234
 seed = 1029
 # logger
@@ -351,12 +352,6 @@ def main():
         del embeddings
         gc.collect()
     logger.info('Loaded embeddings. Time {:.2f}s'.format(time() - start_time))
-    '''
-    X_train = np.load('../input/repro/X_train.npy')
-    y_train = np.load('../input/repro/y_train.npy')
-    X_test = np.load('../input/repro/X_test.npy')
-    embedding = np.load('../input/repro/emb_mean_glove_paragram.npy')
-    '''
 
     # data loader
     test_dataset = TensorDataset(torch.from_numpy(X_test.astype('int64')))
@@ -392,8 +387,8 @@ def main():
             if epoch_unfreeze is not None and epoch_i == epoch_unfreeze:
                 for param in model.parameters():
                     param.requires_grad = True
-                optimizer = optim.Adam(model.parameters(), lr=lr / 10)
-                message = 'Unfreezed. LR {}'.format(lr / 10)
+                optimizer = optim.Adam(model.parameters(), lr=lr2)
+                message = 'Unfreezed. LR {}'.format(lr2)
             loss = train(model, train_loader, criterion, optimizer, device)
             if validate:
                 validation = validate(model, val_loader, criterion, device)
