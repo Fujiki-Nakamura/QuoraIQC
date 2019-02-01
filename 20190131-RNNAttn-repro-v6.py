@@ -1,3 +1,4 @@
+'''20190131-2 v2'''
 from datetime import datetime; start = datetime.now()
 from time import time; start_time = time()
 from logging import getLogger, FileHandler, StreamHandler, Formatter, DEBUG, INFO
@@ -38,11 +39,12 @@ emb_paths = {
     # 'google': '../input/embeddings/GoogleNews-vectors-negative300/GoogleNews-vectors-negative300.bin'
 }
 batch_size = 512
-batch_size_val = 4096
+batch_size_val = 8192
 # training
 device = 'cuda:0'
 thresholds = np.arange(0.3, 0.501, 0.01)
 n_splits = 4
+skf_random_state = 10
 epochs = 5
 lr = 1e-3
 epoch_unfreeze = None  # 3
@@ -97,6 +99,7 @@ class RNNAttn(nn.Module):
         hidden_size=64, n_layers=1, device='cuda:0'
     ):
         super(RNNAttn, self).__init__()
+        self.embedding_size = embedding_size
         self.hidden_size = 128
         self.n_layers = n_layers
         self.device = device
@@ -105,7 +108,7 @@ class RNNAttn(nn.Module):
         if embedding is not None:
             self.embedding.weight = nn.Parameter(torch.tensor(embedding, dtype=torch.float32))
             self.embedding.weight.requires_grad = embedding_trainable
-        self.dropout_emb = nn.Dropout2d(0.1)
+        self.dropout_emb = nn.Dropout(0.1)
         self.lstm = nn.LSTM(
             embedding_size, hidden_size, num_layers=n_layers, bias=True, batch_first=True, dropout=0.,
             bidirectional=True)
@@ -115,18 +118,17 @@ class RNNAttn(nn.Module):
         self.attn_lstm = Attention(hidden_size * 2, maxlen)
         self.attn_gru = Attention(hidden_size * 2, maxlen)
         self.fc = nn.Linear(hidden_size * 2 * 4, 16)
-        # self.bn = nn.BatchNorm1d(16)
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(0.1)
         self.out = nn.Linear(16, 1)
-        # self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
         bs = x.size(0)
-        # h0 = torch.zeros(self.n_layers * 2, bs, self.hidden_dim).to(self.device)
-        # c0 = torch.zeros(self.n_layers * 2, bs, self.hidden_dim).to(self.device)
+        seq = x.size(1)
+
         x = self.embedding(x)
-        x = self.dropout_emb(x)
+        x = self.dropout_emb(x.view(bs * seq, self.embedding_size))  # NOTE
+        x = x.view(bs, seq, self.embedding_size)
         h_lstm, _ = self.lstm(x)
         h_gru, _ = self.gru(h_lstm)
         h_attn_lstm = self.attn_lstm(h_lstm)
@@ -137,7 +139,6 @@ class RNNAttn(nn.Module):
         out = self.relu(self.fc(out))
         out = self.dropout(out)
         out = self.out(out)
-        # out = self.sigmoid(out)
         return out.squeeze()
 
 
@@ -171,15 +172,6 @@ def clean_number(x):
     return x
 
 
-def preprocess_misspell(text, dictinary):
-    '''
-    https://www.kaggle.com/theoviel/improve-your-score-with-text-preprocessing-v2
-    '''
-    for word in dictionary.keys():
-        text = text.replace(word, dictinary[word])
-    return text
-
-
 def _get_mispell(mispell_dict):
     mispell_re = re.compile('(%s)' % '|'.join(mispell_dict.keys()))
     return mispell_dict, mispell_re
@@ -206,7 +198,8 @@ def get_coefs(word, *arr):
 
 def get_embedding(path, word_index, name='glove'):
     if name.lower() == 'glove':
-        embeddings_index = dict(get_coefs(*o.split(' ')) for o in open(path))
+        embeddings_index = dict(
+            get_coefs(*o.split(' ')) for o in open(path, encoding='utf-8', errors='ignore'))
         emb_mean, emb_std = -0.005838499, 0.48782197
         emb_size = 300
     elif name.lower() == 'fasttext':
@@ -216,7 +209,7 @@ def get_embedding(path, word_index, name='glove'):
     elif name.lower() == 'paragram':
         embeddings_index = dict(
             get_coefs(*o.split(" "))
-            for o in open(path, encoding="utf8", errors='ignore') if len(o) > 100)
+            for o in open(path, encoding='utf-8', errors='ignore') if len(o) > 100)
         emb_mean, emb_std = -0.0053247833, 0.49346462
         emb_size = 300
     elif name.lower() == 'google':
@@ -229,15 +222,14 @@ def get_embedding(path, word_index, name='glove'):
     logger.debug('Created embedding_index: {}'.format(name))
 
     n_words = min(max_features, len(word_index))
-    embedding_matrix = np.random.normal(emb_mean, emb_std, (n_words, emb_size))
+    embedding_matrix = np.random.normal(emb_mean, emb_std, (n_words + 1, emb_size))  # NOTE
     for word, i in tqdm(word_index.items()):
-        if i >= max_features:
-            continue
+        if i >= max_features: continue  # noqa
         embedding_vector = embeddings_index.get(word)
         if embedding_vector is not None:
             embedding_matrix[i] = embedding_vector
-    del embeddings_index, embedding_vector
-    gc.collect()
+
+    del embeddings_index, embedding_vector; gc.collect()  # noqa
     return embedding_matrix
 
 
@@ -337,7 +329,7 @@ def main():
     # tokenize
     t0 = time()
     tokenizer = Tokenizer(lower=True, filters='', num_words=max_features)  # NOTE
-    tokenizer.fit_on_texts(list(X_train) + list(X_test))
+    tokenizer.fit_on_texts(list(X_train))  # NOTE + list(X_test))
     X_train = tokenizer.texts_to_sequences(X_train)
     X_test = tokenizer.texts_to_sequences(X_test)
     logger.info('Tokenized in {:.2f}s. Time {:.2f}s'.format(time() - t0, time() - start_time))
@@ -348,10 +340,7 @@ def main():
     logger.info('Padding in {:.2f}s. Time {:.2f}s'.format(time() - t0, time() - start_time))
     # target
     y_train = df_train['target'].values
-    # shuffle
-    # indices = np.random.permutation(len(X_train))
-    # X_train, y_train = X_train[indices], y_train[indices]
-    # features_train = features_train[indices]
+
     # embedding
     if debug:
         embedding = None
@@ -363,6 +352,12 @@ def main():
         del embeddings
         gc.collect()
     logger.info('Loaded embeddings. Time {:.2f}s'.format(time() - start_time))
+    '''
+    X_train = np.load('../input/repro/X_train.npy')
+    y_train = np.load('../input/repro/y_train.npy')
+    X_test = np.load('../input/repro/X_test.npy')
+    embedding = np.load('../input/repro/emb_mean_glove_paragram.npy')
+    '''
 
     # data loader
     test_dataset = TensorDataset(torch.from_numpy(X_test.astype('int64')))
@@ -372,7 +367,7 @@ def main():
     seed = set_seed(seed0)
     logger.info('Set seed {}'.format(seed))
     proba_train, proba_test = np.zeros(len(X_train)), np.zeros((len(X_test), n_splits))
-    skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=seed)
+    skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=skf_random_state)
     for fold_i, (train_idx, val_idx) in enumerate(skf.split(X_train, y_train)):
         logger.info('Fold {}'.format(fold_i + 1))
         # split
@@ -380,16 +375,15 @@ def main():
         X_val_fold, y_val_fold = X_train[val_idx].astype('int64'), y_train[val_idx].astype('float32')
         train_dataset = TensorDataset(torch.from_numpy(X_train_fold), torch.from_numpy(y_train_fold))
         val_dataset = TensorDataset(torch.from_numpy(X_val_fold), torch.from_numpy(y_val_fold))
-
+        # data loader
         train_loader  = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
         val_loader = DataLoader(val_dataset, batch_size, shuffle=False)
 
-        set_seed(seed + fold_i)  # NOTE
+        set_seed(seed + fold_i)
         # model
         model = RNNAttn(
             max_features, embedding_size=emb_size, embedding=embedding,
             embedding_trainable=embedding_trainable, device=device).to(device)
-        # criterion = nn.BCELoss()  # NOTE
         criterion = nn.BCEWithLogitsLoss()
         optimizer = optim.Adam(model.parameters(), lr=lr)
 
